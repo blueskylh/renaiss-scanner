@@ -8,7 +8,7 @@
 ---
 **关注我的 X → [Follow @blueskylh1](https://twitter.com/intent/user?screen_name=blueskylh1)**
 ---
-**已部署的网站 → [直达链接]([https://www.renaiss.xyz/ref/blueskyone](https://twitter.com/intent/user?screen_name=blueskylh1](https://renaiss-tool-689931.napa.de5.net/))**
+**已部署的网站 → [直达链接](https://renaiss-tool-689931.napa.de5.net/)**
 ---
 
 ![Demo](screenshot.png)
