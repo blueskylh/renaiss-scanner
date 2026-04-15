@@ -1,0 +1,18 @@
+name = "renaiss-scanner"
+compatibility_date = "2026-04-13"
+main = "backend/worker.js"
+workers_dev = true
+
+[vars]
+MARKETPLACE_API = "https://www.renaiss.xyz/api/trpc/collectible.list"
+SYNC_LIMIT = "50"
+REFRESH_TOKEN = "your-refresh-token-here"
+FRONTEND_ORIGIN = "your-frontend-origin-here"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "renaiss-scanner"
+database_id = "your-database-id-here"
+
+[triggers]
+crons = ["*/10 * * * *"]

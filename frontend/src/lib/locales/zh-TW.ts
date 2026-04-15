@@ -1,0 +1,48 @@
+export default {
+  "app.title": "Renaiss 在售連號工具",
+  "app.badge": "Marketplace Cache",
+  "app.description": "自動同步 Renaiss Marketplace 的在售資料，只展示當前可買的連號組合。",
+  "app.syncFrequency": "同步頻率：每 10 分鐘",
+  "app.timezone": "時區：UTC",
+  "app.registerRenaiss": "註冊 Renaiss",
+  "app.followX": "關注 X",
+
+  "stats.listedPairs": "在售連號對",
+  "stats.marketTotal": "市場在售總量",
+  "stats.unit": "張",
+  "stats.pendingSync": "待同步",
+  "stats.onlyBothListed": "僅展示雙卡均在售",
+
+  "info.dbListed": "當前資料庫在售",
+  "info.updatedAgo": "{minutes} 分鐘前更新",
+  "info.justUpdated": "剛剛更新",
+  "info.updatedHoursAgo": "{hours} 小時前更新",
+
+  "scan.syncing": "正在同步在售市場資料",
+  "scan.loading": "載入中...",
+  "scan.waitingFirst": "等待首次同步",
+  "scan.cacheNotReady": "在售快取尚未就緒",
+  "scan.cacheNotReadyDesc": "定時任務會每 10 分鐘自動抓取一次 marketplace 在售資料。首次同步完成後頁面會自動顯示在售連號。",
+  "scan.connectFailed": "連線失敗",
+
+  "pair.listedPair": "在售連號",
+  "pair.bothListed": "雙卡在售",
+  "pair.found": "發現 {count} 個可購連號對",
+  "pair.priceAsc": "價格升序",
+  "pair.totalCostTooltip": "兩張卡牌的掛單價總和",
+  "pair.noPairsFound": "當前沒有找到雙卡均在售的連號對",
+
+  "card.listed": "在售",
+  "card.bargain": "撿漏",
+  "card.bargainTooltip": "掛單價低於 FMV 超過 $10",
+  "card.buy": "購買",
+  "card.fmv": "FMV",
+  "card.price": "掛單價",
+
+  "page.first": "第一頁",
+  "page.prev": "上一頁",
+  "page.next": "下一頁",
+  "page.last": "最後一頁",
+
+  "lang.label": "語言",
+} as const

@@ -1,0 +1,4 @@
+MARKETPLACE_API=https://www.renaiss.xyz/api/trpc/collectible.list
+SYNC_LIMIT=50
+REFRESH_TOKEN=change-me
+FRONTEND_ORIGIN=https://your-frontend-origin-here

@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Cloudflare
+.wrangler/
+
+# Environment files (contain secrets)
+.env
+.env.local
+.env.*.local
+.dev.vars
+
+# Cache files
+.eslintcache
+*.tsbuildinfo
+.npm/
+
+# Claude Code
+.claude/
+
+# Codex / misc caches
+.codex/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Images/screenshots (non-project assets)
+1.jpg
+2.jpg
+
+# Temporary files
+*.tmp
+*.temp
