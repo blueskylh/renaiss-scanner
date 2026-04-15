@@ -6,7 +6,7 @@
 
 **通过我的邀请链接注册 Renaiss → [立即注册](https://www.renaiss.xyz/ref/blueskyone)**
 **关注我的 X → [Follow @blueskylh1](https://twitter.com/intent/user?screen_name=blueskylh1)**
-
+**已部署的网站 →[直达链接]([https://twitter.com/intent/user?screen_name=blueskylh1](https://renaiss-tool-689931.napa.de5.net/))**
 ---
 
 ![Demo](screenshot.png)
