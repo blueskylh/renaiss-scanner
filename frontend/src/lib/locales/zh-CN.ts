@@ -37,6 +37,7 @@ export default {
   "pair.priceAsc": "价格升序",
   "pair.totalCostTooltip": "两张卡牌的挂单价总和",
   "pair.noPairsFound": "当前没有找到双卡均在售的连号对",
+  "pair.consecutive": "连号 +1",
 
   // Card
   "card.listed": "在售",

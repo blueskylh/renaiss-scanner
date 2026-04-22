@@ -32,6 +32,7 @@ export default {
   "pair.priceAsc": "Price ↑",
   "pair.totalCostTooltip": "Total asking price for both cards",
   "pair.noPairsFound": "No consecutive pairs found where both cards are listed",
+  "pair.consecutive": "+1 Consecutive",
 
   "card.listed": "Listed",
   "card.bargain": "Bargain",

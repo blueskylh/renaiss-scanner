@@ -32,6 +32,7 @@ export default {
   "pair.priceAsc": "가격 오름차순",
   "pair.totalCostTooltip": "두 카드의 판매가 합계",
   "pair.noPairsFound": "두 카드 모두 판매 중인 연번 페어를 찾을 수 없습니다",
+  "pair.consecutive": "연번 +1",
 
   "card.listed": "판매 중",
   "card.bargain": "특가",

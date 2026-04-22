@@ -32,6 +32,7 @@ export default {
   "pair.priceAsc": "価格昇順",
   "pair.totalCostTooltip": "2枚のカードの出品価格の合計",
   "pair.noPairsFound": "両カード出品中の連番ペアが見つかりません",
+  "pair.consecutive": "連番 +1",
 
   "card.listed": "出品中",
   "card.bargain": "お買い得",

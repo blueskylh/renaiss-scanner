@@ -3,6 +3,7 @@ import { api } from "@/lib/api"
 import { useI18n, localeLabels, type Locale } from "@/lib/i18n"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
   TooltipContent,
@@ -20,7 +21,7 @@ import {
   Clock, Database,
   ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight,
   Languages, ShoppingCart, Eye, Flame,
-  X, BookOpen,
+  X, BookOpen, Sparkles,
 } from "lucide-react"
 
 interface CardData {
@@ -92,13 +93,14 @@ function formatRelativeTime(isoStr: string | null | undefined, t: (key: string, 
   const hours = Math.floor(minutes / 60)
   return t("info.updatedHoursAgo", { hours })
 }
-function CardImage({ name, imageUrl, onClick }: { name: string; imageUrl?: string | null; onClick?: () => void }) {
+
+function CardImage({ name, imageUrl, onClick, hasGlow }: { name: string; imageUrl?: string | null; onClick?: () => void; hasGlow?: boolean }) {
   const [error, setError] = useState(false)
   const url = imageUrl || null
 
   if (!url || error) {
     return (
-      <div className="w-full aspect-[2/3] rounded-lg bg-bg-subtle flex items-center justify-center cursor-pointer" onClick={onClick}>
+      <div className="w-full aspect-[2/3] rounded-xl bg-bg-subtle flex items-center justify-center cursor-pointer border border-white/5" onClick={onClick}>
         <span className="text-fg-muted text-xs text-center px-2">{name.slice(0, 30)}</span>
       </div>
     )
@@ -108,7 +110,7 @@ function CardImage({ name, imageUrl, onClick }: { name: string; imageUrl?: strin
     <img
       src={url}
       alt={name}
-      className="w-full aspect-[2/3] object-cover rounded-lg shadow-sm cursor-pointer hover:opacity-90 transition-opacity"
+      className={`w-full aspect-[2/3] object-cover rounded-xl shadow-sm cursor-pointer transition-all duration-300 ${hasGlow ? 'nft-glow' : ''} hover:scale-[1.02]`}
       onError={() => setError(true)}
       loading="lazy"
       onClick={onClick}
@@ -118,9 +120,11 @@ function CardImage({ name, imageUrl, onClick }: { name: string; imageUrl?: strin
 
 function StatCard({ value, label, accent }: { value: string | number; label: string; accent?: boolean }) {
   return (
-    <div className="rounded-2xl border border-border-strong bg-bg-base-opaque p-4 text-center shadow-sm">
-      <div className={`text-xl font-bold ${accent ? "text-brand-100" : "text-fg-base"}`}>{value}</div>
-      <div className="mt-1 text-[11px] uppercase tracking-wide text-fg-muted">{label}</div>
+    <div className="rounded-2xl glass p-5 text-center relative overflow-hidden group">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className={`relative text-2xl font-bold mono-data ${accent ? "gradient-text" : "text-fg-base"}`}>{value}</div>
+      <div className="mt-2 text-[11px] uppercase tracking-wider text-fg-muted font-medium">{label}</div>
     </div>
   )
 }
@@ -136,50 +140,73 @@ function PairCard({ pair, index, t }: { pair: PairData; index: number; t: (key: 
 
   return (
     <>
-      <div className="overflow-hidden rounded-2xl border border-border-strong bg-bg-base-opaque shadow-sm">
-        <div className="flex items-center justify-between border-b border-border-base p-4 pb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-fg-muted">#{index + 1}</span>
-            <Zap className="h-3.5 w-3.5 text-brand-100" />
+      <div className="overflow-hidden rounded-2xl glass card-glow relative group">
+        {/* Top accent line */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
+
+        <div className="flex items-center justify-between p-4 pb-3">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-mono text-fg-muted opacity-60">#{index + 1}</span>
+            <Zap className="h-4 w-4 text-accent-purple" />
             <span className="text-sm font-semibold text-fg-base">{t("pair.listedPair")}</span>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="rounded bg-tag-cyan-10 px-1.5 py-0.5 text-xs font-mono font-bold text-tag-cyan-100 cursor-default">
+                  <span className="rounded-lg px-2 py-1 text-xs font-mono font-bold price-glow text-emerald-400 mono-data">
                     ${pair.totalCost.toFixed(2)}
                   </span>
                 </TooltipTrigger>
-                <TooltipContent>{t("pair.totalCostTooltip")}</TooltipContent>
+                <TooltipContent className="glass">{t("pair.totalCostTooltip")}</TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
-          <Badge className="border-0 bg-tag-cyan-10 text-[11px] text-tag-cyan-100">{t("pair.bothListed")}</Badge>
+
+          {/* Secondary badge */}
+          <div className="rounded-full px-3 py-1 bg-fuchsia-900/30 text-fuchsia-400 border border-fuchsia-500/20 text-[10px] font-semibold">
+            {t("pair.bothListed")}
+          </div>
         </div>
 
         <div className="p-4">
-          <div className="flex items-start gap-3">
-            <PairSide card={pair.card1} t={t} onImageClick={() => openImage(pair.card1)} />
-            <div className="flex shrink-0 flex-col items-center gap-1 pt-12">
-              <ArrowRight className="h-5 w-5 text-brand-100" />
-              <span className="text-[10px] font-mono font-bold text-fg-muted">+1</span>
+          <div className="flex items-start gap-4">
+            <PairSide card={pair.card1} t={t} onImageClick={() => openImage(pair.card1)} hasGlow />
+            <div className="flex shrink-0 flex-col items-center justify-center pt-12">
+              {/* Consecutive Badge - Clean design with gradient border */}
+              <div className="relative px-2 py-1">
+                {/* Gradient border effect */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 p-[1px]">
+                  <div className="absolute inset-0 rounded-full bg-neutral-900/90" />
+                </div>
+                {/* Inner content */}
+                <div className="relative px-3 py-1 flex items-center gap-1.5">
+                  <Sparkles className="h-3 w-3 text-purple-400" />
+                  <span className="text-[11px] font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent uppercase tracking-wider">
+                    {t("pair.consecutive")}
+                  </span>
+                </div>
+              </div>
             </div>
-            <PairSide card={pair.card2} t={t} onImageClick={() => openImage(pair.card2)} />
+            <PairSide card={pair.card2} t={t} onImageClick={() => openImage(pair.card2)} hasGlow />
           </div>
         </div>
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg bg-black/95 border-none p-0 overflow-hidden">
+        <DialogContent className="max-w-lg bg-black/95 border border-white/10 p-0 overflow-hidden backdrop-blur-xl">
           {dialogCard && (
             <>
               <DialogTitle className="sr-only">{dialogCard.name}</DialogTitle>
               <DialogDescription className="sr-only">{dialogCard.serial}</DialogDescription>
               {dialogCard.imageUrl ? (
-                <img
-                  src={dialogCard.imageUrl}
-                  alt={dialogCard.name}
-                  className="w-full object-contain max-h-[80vh]"
-                />
+                <div className="relative">
+                  <img
+                    src={dialogCard.imageUrl}
+                    alt={dialogCard.name}
+                    className="w-full object-contain max-h-[80vh]"
+                  />
+                  {/* Glow effect on full image */}
+                  <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(168,85,247,0.2)] pointer-events-none" />
+                </div>
               ) : (
                 <div className="flex items-center justify-center h-[60vh] text-fg-muted text-sm">
                   {dialogCard.name}
@@ -193,58 +220,98 @@ function PairCard({ pair, index, t }: { pair: PairData; index: number; t: (key: 
   )
 }
 
-function PairSide({ card, t, onImageClick }: { card: CardData; t: (key: string, params?: Record<string, string | number>) => string; onImageClick?: () => void }) {
+function PairSide({ card, t, onImageClick, hasGlow }: { card: CardData; t: (key: string, params?: Record<string, string | number>) => string; onImageClick?: () => void; hasGlow?: boolean }) {
   const isBargain = card.fmv != null && card.fmv > 0 && card.price != null && card.price > 0 && (card.fmv - card.price) > 10
 
   return (
     <div className="min-w-0 flex-1">
       <div className="mx-auto mb-3 w-full max-w-[140px] relative">
-        <CardImage name={card.name} imageUrl={card.imageUrl} onClick={onImageClick} />
+        <CardImage name={card.name} imageUrl={card.imageUrl} onClick={onImageClick} hasGlow={hasGlow} />
         {isBargain && (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="absolute top-1 left-1 rounded bg-gradient-to-r from-orange-500 to-red-500 px-1 py-0.5 text-[9px] font-bold text-white shadow-sm">
-                  <Flame className="inline h-3 w-3" /> {t("card.bargain")}
+                <span className="absolute top-1 left-1 rounded-lg bg-gradient-to-r from-orange-500 via-pink-500 to-red-500 px-1.5 py-0.5 text-[9px] font-bold text-white shadow-lg flex items-center gap-1 animate-pulse">
+                  <Flame className="h-3 w-3" />
+                  <span className="bg-clip-text">{t("card.bargain")}</span>
                 </span>
               </TooltipTrigger>
-              <TooltipContent>{t("card.bargainTooltip")}</TooltipContent>
+              <TooltipContent className="glass">{t("card.bargainTooltip")}</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         )}
       </div>
-      <div className="space-y-1.5">
-        <div className="flex items-center gap-1.5">
-          <Hash className="h-3 w-3 shrink-0 text-fg-muted" />
-          <span className="font-mono text-xs font-semibold text-brand-100">{card.serial}</span>
+
+      <div className="space-y-2">
+        {/* Serial Number - Monospace style */}
+        <div className="flex items-center gap-2">
+          <Hash className="h-3.5 w-3.5 shrink-0 text-accent-cyan" />
+          <span className="font-mono text-sm font-semibold text-accent-cyan mono-data">{card.serial}</span>
         </div>
+
         <p className="line-clamp-2 text-[11px] leading-tight text-fg-subtle">{card.name}</p>
+
         {card.grade && (
-          <span className="text-[10px] text-fg-muted">{card.grader} {card.grade}</span>
+          <span className="text-[10px] text-fg-muted mono-data">{card.grader} {card.grade}</span>
         )}
-        <div className="flex flex-wrap items-center gap-1.5">
-          <Badge className="border-0 bg-tag-cyan-10 text-[10px] text-tag-cyan-100">{t("card.listed")}</Badge>
+
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Listed badge */}
+          <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold glass text-accent-emerald text-xs">
+            {t("card.listed")}
+          </span>
+
+          {/* Price - High contrast */}
           {card.price != null && card.price > 0 && (
-            <span className="text-[10px] font-mono font-semibold text-fg-base">${card.price.toFixed(2)}</span>
+            <span className="rounded-lg px-2 py-0.5 text-[11px] font-bold price-glow text-emerald-400 mono-data">
+              ${card.price.toFixed(2)}
+            </span>
           )}
         </div>
+
+        {/* FMV */}
         {card.fmv != null && card.fmv > 0 && (
           <div className="text-[10px] text-fg-muted">
-            {t("card.fmv")}: <span className="font-mono font-medium">${card.fmv.toFixed(2)}</span>
+            <span className="text-fg-subtle">{t("card.fmv")}:</span>{" "}
+            <span className="font-mono font-medium text-accent-cyan mono-data">${card.fmv.toFixed(2)}</span>
           </div>
         )}
+
+        {/* Buy button */}
         {card.tokenId && (
           <a
             href={`https://www.renaiss.xyz/card/${card.tokenId}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded bg-brand-100/10 px-2 py-0.5 text-[10px] font-medium text-brand-100 transition-colors hover:bg-brand-100/20"
+            className="inline-flex items-center gap-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-1 text-[10px] font-medium text-purple-300 transition-all duration-200 hover:bg-purple-500/20 hover:border-purple-400/50 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)] group"
           >
-            <ShoppingCart className="h-3 w-3" />
+            <ShoppingCart className="h-3 w-3 transition-transform group-hover:scale-110" />
             {t("card.buy")}
           </a>
         )}
       </div>
+    </div>
+  )
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-4">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="rounded-2xl glass p-4">
+          <div className="flex items-center justify-between mb-4">
+            <Skeleton className="h-4 w-32 skeleton-shimmer rounded-lg" />
+            <Skeleton className="h-5 w-20 skeleton-shimmer rounded-full" />
+          </div>
+          <div className="flex gap-4">
+            <Skeleton className="h-[200px] w-[100px] skeleton-shimmer rounded-xl" />
+            <div className="flex items-center justify-center">
+              <Skeleton className="h-6 w-6 skeleton-shimmer rounded-full" />
+            </div>
+            <Skeleton className="h-[200px] w-[100px] skeleton-shimmer rounded-xl" />
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -311,7 +378,6 @@ export default function ConsecutiveScanner() {
   const lastScanTime = scanStatus?.status?.last_listing_refresh || scanStatus?.status?.last_full_scan || scanResult?.scannedAt
 
   const relativeTime = formatRelativeTime(lastScanTime, t)
-
   const sourceTotal = scanStatus?.status?.last_source_total || 0
 
   let progressPercent = 0
@@ -328,47 +394,64 @@ export default function ConsecutiveScanner() {
   return (
     <TooltipProvider>
       <div className="mx-auto w-full max-w-5xl px-2 sm:px-0">
-        {/* Header */}
-        <div className="mb-6 overflow-hidden rounded-3xl border border-border-strong bg-[radial-gradient(circle_at_top_left,_rgba(110,104,255,0.16),_transparent_35%),radial-gradient(circle_at_top_right,_rgba(255,104,99,0.14),_transparent_30%),var(--color-bg-base-opaque)] p-6 shadow-sm">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+        {/* Header - Glass Morphism */}
+        <div className="mb-8 overflow-hidden rounded-3xl glass p-6 relative">
+          {/* Gradient background overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-pink-500/10 pointer-events-none" />
+          {/* Top accent */}
+          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-purple-500/50 via-pink-500/30 to-orange-500/50" />
+
+          <div className="relative flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-2xl">
-              <div className="mb-2 flex items-center gap-2.5">
-                <img src="/logo.svg" alt="Renaiss" className="h-8 w-8" />
-                <h1 className="text-2xl font-bold text-fg-base">{t("app.title")}</h1>
-                <Badge className="border-0 bg-brand-10 text-[10px] text-brand-100">{t("app.badge")}</Badge>
+              <div className="mb-3 flex items-center gap-3">
+                <img src="/logo.svg" alt="Renaiss" className="h-9 w-9" />
+                <h1 className="text-2xl font-bold gradient-text">{t("app.title")}</h1>
+                {/* Web3 style badge */}
+                <div className="consecutive-badge rounded-full px-2.5 py-1">
+                  <span className="text-[10px] font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-orange-300 bg-clip-text text-transparent">
+                    {t("app.badge")}
+                  </span>
+                </div>
               </div>
               <p className="text-sm leading-6 text-fg-subtle">
                 {t("app.description")}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
-                <Badge className="border-0 bg-bg-subtle text-fg-subtle">{t("app.syncFrequency")}</Badge>
-                <Badge className="border-0 bg-bg-subtle text-fg-subtle">{t("app.timezone")}</Badge>
+                <span className="rounded-full glass px-3 py-1 text-[11px] text-fg-muted">{t("app.syncFrequency")}</span>
+                <span className="rounded-full glass px-3 py-1 text-[11px] text-fg-muted">{t("app.timezone")}</span>
               </div>
             </div>
 
+            {/* Action buttons */}
             <div className="grid min-w-[260px] grid-cols-3 gap-3 lg:w-[540px] lg:grid-cols-3">
-              <div className="rounded-2xl border border-border-strong bg-bg-base-opaque/70 p-4">
-                <div className="mb-1 flex items-center gap-2 text-xs uppercase tracking-wide text-fg-muted">
-                  <Clock className="h-3.5 w-3.5" />
-                  {relativeTime}
-                </div>
-                <div className="text-sm font-medium text-fg-base">
-                  {(scanStatus?.totalListed || sourceTotal)
-                    ? `${(scanStatus?.totalListed || sourceTotal).toLocaleString()} ${t("stats.unit")}`
-                    : t("stats.pendingSync")}
+              {/* Time info */}
+              <div className="rounded-xl glass p-4 relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-br from-accent-cyan/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative">
+                  <div className="mb-1 flex items-center gap-2 text-xs uppercase tracking-wider text-fg-muted">
+                    <Clock className="h-3.5 w-3.5 text-accent-cyan" />
+                    {relativeTime}
+                  </div>
+                  <div className="text-sm font-semibold text-fg-base mono-data">
+                    {(scanStatus?.totalListed || sourceTotal)
+                      ? `${(scanStatus?.totalListed || sourceTotal).toLocaleString()} ${t("stats.unit")}`
+                      : t("stats.pendingSync")}
+                  </div>
                 </div>
               </div>
 
               {/* Language Switcher */}
-              <div className="rounded-2xl border border-border-strong bg-bg-base-opaque/70 p-4 flex flex-col items-center justify-center">
-                <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-fg-muted mb-1">
-                  <Languages className="h-3.5 w-3.5" />
+              <div className="rounded-xl glass p-4 flex flex-col items-center justify-center relative overflow-visible group">
+                <div className="absolute inset-0 bg-gradient-to-br from-accent-purple/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative flex items-center gap-1.5 text-xs uppercase tracking-wider text-fg-muted mb-2">
+                  <Languages className="h-3.5 w-3.5 text-accent-purple" />
                   {t("lang.label")}
                 </div>
                 <select
                   value={locale}
                   onChange={(e) => setLocale(e.target.value as Locale)}
-                  className="text-xs font-medium text-fg-base bg-bg-base-opaque border border-border-strong rounded-lg px-2 py-1 cursor-pointer focus:outline-none focus:ring-1 focus:ring-brand-100 [&>option]:bg-bg-base-opaque [&>option]:text-fg-base"
+                  className="relative z-10 text-xs font-medium text-fg-base bg-neutral-900/80 border border-white/20 rounded-lg px-3 py-1.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent-purple/50 focus:border-accent-purple/50 hover:border-white/30 transition-colors [&>option]:bg-neutral-900 [&>option]:text-fg-base min-w-[80px] text-center"
+                  style={{ WebkitAppearance: "menulist" }}
                 >
                   {locales.map((l) => (
                     <option key={l} value={l}>{localeLabels[l]}</option>
@@ -376,40 +459,42 @@ export default function ConsecutiveScanner() {
                 </select>
               </div>
 
+              {/* Register Renaiss */}
               <a
                 href="https://www.renaiss.xyz/ref/blueskyone"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-center gap-2 rounded-full border border-purple-500/30 bg-purple-600/10 px-4 py-2 text-sm font-medium text-purple-200 transition-all duration-200 hover:border-purple-400/60 hover:bg-purple-600/20 hover:shadow-[0_0_16px_rgba(168,85,247,0.4)]"
+                className="group flex items-center justify-center gap-2 rounded-xl border border-purple-500/30 bg-purple-500/10 px-4 py-3 text-sm font-medium text-purple-300 transition-all duration-300 hover:bg-purple-500/20 hover:border-purple-400/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.25)]"
               >
                 <img src="/logo.svg" alt="Renaiss" className="h-4 w-4" />
-                {t("app.registerRenaiss")}
+                <span>{t("app.registerRenaiss")}</span>
               </a>
+
+              {/* Tutorial */}
               <a
-                href="https://x.com/blueskylh1/status/2044281808297308586"
+                href="https://x.com/blueskylh1/status/2046864072818512013"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-600/10 px-3 py-2 text-sm font-medium text-cyan-200 transition-all duration-200 hover:border-cyan-400/60 hover:bg-cyan-600/20 hover:shadow-[0_0_16px_rgba(34,211,238,0.35)]"
+                className="group flex items-center justify-center gap-2 rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-3 py-3 text-sm font-medium text-cyan-300 transition-all duration-300 hover:bg-cyan-500/20 hover:border-cyan-400/50 hover:shadow-[0_0_20px_rgba(34,211,238,0.25)]"
               >
                 <BookOpen className="h-4 w-4" />
-                {t("app.tutorial")}
+                <span>{t("app.tutorial")}</span>
               </a>
+
+              {/* Follow Author */}
               <a
                 href="https://twitter.com/intent/user?screen_name=blueskylh1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-2 rounded-full border border-white/10 bg-black/50 px-3 py-1.5 text-sm transition-all duration-200 hover:border-sky-400/40 hover:shadow-[0_0_16px_rgba(56,189,248,0.35)]"
+                className="group flex items-center gap-2 rounded-xl border border-white/10 glass px-3 py-2 text-sm transition-all duration-300 hover:border-sky-400/40 hover:shadow-[0_0_16px_rgba(56,189,248,0.2)]"
               >
-                {/* 作者头像 */}
                 <img
                   src="/avatar.jpg"
                   alt="蓝天"
                   className="h-6 w-6 rounded-full object-cover ring-1 ring-white/20"
                 />
-                {/* 作者名 */}
                 <span className="text-sm text-slate-200">蓝天</span>
-                {/* X Icon */}
-                <X className="h-3.5 w-3.5 text-slate-400 transition-colors duration-200 group-hover:text-sky-400" />
+                <X className="h-3.5 w-3.5 text-slate-400 transition-colors group-hover:text-sky-400" />
               </a>
             </div>
           </div>
@@ -417,19 +502,30 @@ export default function ConsecutiveScanner() {
 
         {/* Scanning progress */}
         {isScanning && (
-          <div className="mb-6 rounded-2xl border border-brand-30 bg-brand-10 p-4 shadow-sm">
-            <div className="mb-2 flex items-center gap-2">
-              <RefreshCw className="h-4 w-4 animate-spin text-brand-100" />
-              <span className="text-sm font-medium text-fg-base">{t("scan.syncing")}</span>
+          <div className="mb-6 rounded-2xl glass p-5 relative overflow-hidden">
+            {/* Glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-pink-500/5 to-transparent" />
+            <div className="relative">
+              <div className="mb-2 flex items-center gap-2">
+                <RefreshCw className="h-4 w-4 animate-spin text-accent-purple" />
+                <span className="text-sm font-medium text-fg-base">{t("scan.syncing")}</span>
+              </div>
+              <p className="mb-3 text-xs font-mono text-fg-muted mono-data">{progress}</p>
+              {progressPercent > 0 && (
+                <div className="relative">
+                  <Progress value={progressPercent} className="h-2 rounded-full bg-white/5" />
+                  {/* Progress bar glow effect */}
+                  <div className="absolute inset-0 h-2 rounded-full progress-glow pointer-events-none" />
+                </div>
+              )}
             </div>
-            <p className="mb-3 text-xs font-mono text-fg-subtle">{progress}</p>
-            {progressPercent > 0 && <Progress value={progressPercent} className="h-2" />}
           </div>
         )}
 
         <div className="space-y-5">
           {hasData && (
             <>
+              {/* Stats Cards */}
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <StatCard
                   value={scanResult?.totalPairs || scanStatus?.status?.consecutive_pairs || "-"}
@@ -442,60 +538,79 @@ export default function ConsecutiveScanner() {
                 />
               </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border-strong bg-bg-base-opaque p-4">
-                <div className="flex flex-wrap items-center gap-4 text-xs text-fg-muted">
-                  <div className="flex items-center gap-1.5">
-                    <Database className="h-3.5 w-3.5" />
-                    {t("info.dbListed")} <span className="font-semibold text-fg-base">{scanStatus?.totalListed?.toLocaleString()}</span> {t("stats.unit")}
+              {/* Info bar */}
+              <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl glass p-4 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-accent-cyan/5 to-transparent" />
+                <div className="relative flex flex-wrap items-center gap-5 text-xs text-fg-muted">
+                  <div className="flex items-center gap-2">
+                    <Database className="h-3.5 w-3.5 text-accent-purple" />
+                    {t("info.dbListed")} <span className="font-semibold text-fg-base mono-data">{scanStatus?.totalListed?.toLocaleString()}</span> {t("stats.unit")}
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5" />
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-3.5 w-3.5 text-accent-cyan" />
                     {relativeTime}
                   </div>
                 </div>
-                <Badge className="border-0 bg-tag-cyan-10 text-tag-cyan-100">{t("stats.onlyBothListed")}</Badge>
+                {/* Secondary badge */}
+                <div className="rounded-full px-3 py-1 bg-fuchsia-900/30 text-fuchsia-400 border border-fuchsia-500/20 text-[10px] font-semibold">
+                  {t("stats.onlyBothListed")}
+                </div>
               </div>
             </>
           )}
 
+          {/* Empty state */}
           {!hasData && !isScanning && (
-            <div className="rounded-2xl border border-border-strong bg-bg-base-opaque p-10 text-center shadow-sm">
-              <img src="/logo.svg" alt="Renaiss" className="mx-auto mb-3 h-10 w-10" />
-              <p className="mb-2 text-sm text-fg-subtle">{t("scan.cacheNotReady")}</p>
-              <p className="text-xs text-fg-muted">{t("scan.cacheNotReadyDesc")}</p>
+            <div className="rounded-2xl glass p-12 text-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
+              <div className="relative">
+                <div className="mb-4 relative inline-block">
+                  <Sparkles className="h-12 w-12 text-fg-muted mx-auto" />
+                  <div className="absolute inset-0 blur-xl bg-accent-purple/10 -z-10" />
+                </div>
+                <p className="mb-2 text-sm text-fg-subtle">{t("scan.cacheNotReady")}</p>
+                <p className="text-xs text-fg-muted">{t("scan.cacheNotReadyDesc")}</p>
+              </div>
             </div>
           )}
 
-          {loading && (
-            <div className="flex items-center justify-center py-8">
-              <RefreshCw className="h-5 w-5 animate-spin text-brand-100" />
-              <span className="ml-2 text-sm text-fg-subtle">{t("scan.loading")}</span>
-            </div>
-          )}
+          {/* Loading state */}
+          {loading && <LoadingSkeleton />}
 
+          {/* Results */}
           {scanResult && !loading && (
             <>
               {scanResult.error && (
-                <div className="rounded-lg border border-border-strong bg-bg-base-opaque p-3 text-sm text-fg-subtle">
+                <div className="rounded-xl glass p-4 text-sm text-fg-subtle">
                   {scanResult.error}
                 </div>
               )}
 
               {scanResult.pairs.length > 0 ? (
                 <div className="space-y-4">
+                  {/* Header */}
                   <div className="flex items-center justify-between">
-                    <h2 className="flex items-center gap-2 text-sm font-semibold text-fg-base">
-                      <Zap className="h-4 w-4 text-brand-100" />
-                      {t("pair.found", { count: scanResult.totalPairs })}
-                      <Badge className="border-0 bg-tag-cyan-10 text-[10px] text-tag-cyan-100">{t("pair.priceAsc")}</Badge>
-                    </h2>
+                    <div className="flex items-center gap-3">
+                      <div className="relative">
+                        <Zap className="h-5 w-5 text-accent-purple" />
+                        <div className="absolute inset-0 blur-sm bg-accent-purple/30 -z-10" />
+                      </div>
+                      <h2 className="text-sm font-semibold text-fg-base">
+                        {t("pair.found", { count: scanResult.totalPairs })}
+                      </h2>
+                      {/* Price ascending badge */}
+                      <span className="rounded-full px-2 py-0.5 bg-emerald-900/30 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold">
+                        {t("pair.priceAsc")}
+                      </span>
+                    </div>
                     {(scanResult.totalPages ?? 1) > 1 && (
-                      <span className="text-xs text-fg-muted">
+                      <span className="text-xs mono-data text-fg-muted">
                         {scanResult.page}/{scanResult.totalPages}
                       </span>
                     )}
                   </div>
 
+                  {/* Pair cards */}
                   {scanResult.pairs.map((pair, i) => {
                     const globalIndex = ((scanResult.page ?? 1) - 1) * PAGE_SIZE + i
                     return (
@@ -503,12 +618,13 @@ export default function ConsecutiveScanner() {
                     )
                   })}
 
+                  {/* Pagination */}
                   {(scanResult.totalPages ?? 1) > 1 && (
                     <div className="flex items-center justify-center gap-1 pt-4">
                       <button
                         onClick={() => goToPage(1)}
                         disabled={currentPage <= 1}
-                        className="rounded-lg border border-border-strong bg-bg-base-opaque p-2 text-fg-subtle transition-colors hover:bg-bg-subtle disabled:cursor-not-allowed disabled:opacity-30"
+                        className="rounded-xl border border-white/10 glass p-2.5 text-fg-subtle transition-all hover:border-accent-purple/30 hover:bg-purple-500/10 disabled:cursor-not-allowed disabled:opacity-30"
                         title={t("page.first")}
                       >
                         <ChevronsLeft className="h-4 w-4" />
@@ -516,7 +632,7 @@ export default function ConsecutiveScanner() {
                       <button
                         onClick={() => goToPage(currentPage - 1)}
                         disabled={currentPage <= 1}
-                        className="rounded-lg border border-border-strong bg-bg-base-opaque p-2 text-fg-subtle transition-colors hover:bg-bg-subtle disabled:cursor-not-allowed disabled:opacity-30"
+                        className="rounded-xl border border-white/10 glass p-2.5 text-fg-subtle transition-all hover:border-accent-purple/30 hover:bg-purple-500/10 disabled:cursor-not-allowed disabled:opacity-30"
                         title={t("page.prev")}
                       >
                         <ChevronLeft className="h-4 w-4" />
@@ -536,10 +652,10 @@ export default function ConsecutiveScanner() {
                           <button
                             key={p}
                             onClick={() => goToPage(p)}
-                            className={`h-9 min-w-[36px] rounded-lg text-xs font-medium transition-colors ${
+                            className={`h-10 min-w-[40px] rounded-xl text-xs font-semibold transition-all ${
                               p === currentPage
-                                ? "border border-brand-100 bg-brand-100 text-white"
-                                : "border border-border-strong bg-bg-base-opaque text-fg-subtle hover:bg-bg-subtle"
+                                ? "border border-accent-purple/50 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-fg-base shadow-[0_0_12px_rgba(168,85,247,0.2)]"
+                                : "border border-white/10 glass text-fg-subtle hover:border-accent-purple/30 hover:bg-purple-500/10"
                             }`}
                           >
                             {p}
@@ -550,7 +666,7 @@ export default function ConsecutiveScanner() {
                       <button
                         onClick={() => goToPage(currentPage + 1)}
                         disabled={currentPage >= (scanResult.totalPages ?? 1)}
-                        className="rounded-lg border border-border-strong bg-bg-base-opaque p-2 text-fg-subtle transition-colors hover:bg-bg-subtle disabled:cursor-not-allowed disabled:opacity-30"
+                        className="rounded-xl border border-white/10 glass p-2.5 text-fg-subtle transition-all hover:border-accent-purple/30 hover:bg-purple-500/10 disabled:cursor-not-allowed disabled:opacity-30"
                         title={t("page.next")}
                       >
                         <ChevronRight className="h-4 w-4" />
@@ -558,7 +674,7 @@ export default function ConsecutiveScanner() {
                       <button
                         onClick={() => goToPage(scanResult.totalPages ?? 1)}
                         disabled={currentPage >= (scanResult.totalPages ?? 1)}
-                        className="rounded-lg border border-border-strong bg-bg-base-opaque p-2 text-fg-subtle transition-colors hover:bg-bg-subtle disabled:cursor-not-allowed disabled:opacity-30"
+                        className="rounded-xl border border-white/10 glass p-2.5 text-fg-subtle transition-all hover:border-accent-purple/30 hover:bg-purple-500/10 disabled:cursor-not-allowed disabled:opacity-30"
                         title={t("page.last")}
                       >
                         <ChevronsRight className="h-4 w-4" />
@@ -567,9 +683,12 @@ export default function ConsecutiveScanner() {
                   )}
                 </div>
               ) : scanResult.totalCards > 0 && !scanResult.error ? (
-                <div className="rounded-2xl border border-border-strong bg-bg-base-opaque p-8 text-center shadow-sm">
-                  <Eye className="mx-auto mb-3 h-8 w-8 text-fg-muted" />
-                  <p className="mb-1 text-sm text-fg-subtle">{t("pair.noPairsFound")}</p>
+                <div className="rounded-2xl glass p-10 text-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent-cyan/5 to-transparent" />
+                  <div className="relative">
+                    <Eye className="h-10 w-10 text-fg-muted mx-auto mb-3" />
+                    <p className="text-sm text-fg-subtle">{t("pair.noPairsFound")}</p>
+                  </div>
                 </div>
               ) : null}
             </>

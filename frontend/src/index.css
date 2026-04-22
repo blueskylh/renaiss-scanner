@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;600;700;900&family=Roboto+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap');
 
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* ===== Tailwind CSS 4 Theme — maps CSS vars to Tailwind tokens ===== */
+/* ===== Tailwind CSS 4 Theme ===== */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -58,7 +58,7 @@
   --color-brand-30: var(--brand-30);
   --color-brand-10: var(--brand-10);
 
-  /* Surf Visualizer (Chart/Status) */
+  /* Surf Visualizer */
   --color-visualizer-rose-pop: var(--visualizer-rose-pop);
   --color-visualizer-indigo-breeze: var(--visualizer-indigo-breeze);
   --color-visualizer-emerald-mint: var(--visualizer-emerald-mint);
@@ -96,31 +96,42 @@
   to { height: 0; }
 }
 
-/* ===== Light Mode (default) ===== */
-:root {
-  /* shadcn semantic tokens (Surf Light) */
-  --background: hsl(0 0% 100%);
-  --foreground: hsl(0 0% 13%);
-  --card: hsl(0 0% 100%);
-  --card-foreground: hsl(0 0% 13%);
-  --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(0 0% 13%);
-  --primary: hsl(339 100% 58%);
+/* ===== Default to Dark Mode ===== */
+:root,
+.dark {
+  /* shadcn semantic tokens (Web3 Dark) */
+  --background: hsl(240 10% 4%);
+  --foreground: hsl(0 0% 95%);
+  --card: hsl(240 8% 8%);
+  --card-foreground: hsl(0 0% 95%);
+  --popover: hsl(240 8% 10%);
+  --popover-foreground: hsl(0 0% 95%);
+  --primary: hsl(270 85% 60%);
   --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(0 3% 95%);
-  --secondary-foreground: hsl(0 0% 13%);
-  --muted: hsl(0 3% 95%);
-  --muted-foreground: hsl(0 0% 48%);
-  --accent: hsl(0 3% 95%);
-  --accent-foreground: hsl(0 0% 13%);
-  --destructive: hsl(357 91% 55%);
+  --secondary: hsl(240 6% 15%);
+  --secondary-foreground: hsl(0 0% 95%);
+  --muted: hsl(240 6% 15%);
+  --muted-foreground: hsl(240 5% 55%);
+  --accent: hsl(240 6% 18%);
+  --accent-foreground: hsl(0 0% 95%);
+  --destructive: hsl(0 80% 60%);
   --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(0 0% 91%);
-  --input: hsl(0 0% 91%);
-  --ring: #212121;
-  --radius: 0.5rem;
+  --border: hsl(240 6% 20%);
+  --input: hsl(240 6% 20%);
+  --ring: hsl(270 85% 60%);
+  --radius: 1rem;
 
-  /* Surf Neutral Palette */
+  /* Web3 Gradients */
+  --gradient-hero: linear-gradient(135deg, hsl(270 70% 50%) 0%, hsl(330 80% 55%) 50%, hsl(25 90% 55%) 100%);
+  --gradient-badge: linear-gradient(135deg, hsl(280 60% 50%), hsl(330 80% 55%), hsl(25 90% 55%));
+  --gradient-card-glow: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.1));
+  --gradient-metal: linear-gradient(135deg, hsl(240 10% 25%) 0%, hsl(240 10% 40%) 50%, hsl(240 10% 25%) 100%);
+  --gradient-price: linear-gradient(135deg, hsl(160 60% 45%), hsl(140 70% 45%));
+
+  /* Font Families */
+  --font-family-mono: "JetBrains Mono", "Geist Mono", "Roboto Mono", ui-monospace, monospace;
+
+  /* Neutral Palette */
   --neutral-0: #ffffff;
   --neutral-50: #fafafa;
   --neutral-100: #f5f4f4;
@@ -131,23 +142,23 @@
   --neutral-600: #5b5b5b;
   --neutral-700: #464646;
   --neutral-800: #2a2a2a;
-  --neutral-900: #212121;
-  --neutral-950: #1b1b1b;
-  --neutral-1000: #101010;
+  --neutral-900: #1b1b1b;
+  --neutral-950: #0f0f0f;
 
-  /* Surf Brand */
-  --brand-100: #ff2882;
-  --brand-60: rgba(255, 40, 130, 0.6);
-  --brand-30: rgba(255, 40, 130, 0.3);
-  --brand-10: rgba(255, 40, 130, 0.1);
+  /* Brand Colors */
+  --brand-100: #a855f7;
+  --brand-60: rgba(168, 85, 247, 0.6);
+  --brand-30: rgba(168, 85, 247, 0.3);
+  --brand-10: rgba(168, 85, 247, 0.1);
 
-  /* Surf Brand Extended */
-  --brand-seafoam: #b6cfd0;
-  --brand-dusty-teal: #6ba4b8;
-  --brand-black-aqua: #002f38;
-  --brand-deep-teal-blue: #07272d;
+  /* Web3 Accent Colors */
+  --accent-purple: #a855f7;
+  --accent-pink: #ec4899;
+  --accent-orange: #f97316;
+  --accent-cyan: #22d3ee;
+  --accent-emerald: #10b981;
 
-  /* Surf Visualizer (Chart) Colors */
+  /* Visualizer Colors */
   --visualizer-rose-pop: #fd4b96;
   --visualizer-indigo-breeze: #6366f1;
   --visualizer-emerald-mint: #10b981;
@@ -157,38 +168,41 @@
   --visualizer-aqua-glow: #06b6d4;
   --visualizer-sunbeam-yellow: #facc15;
 
-  /* Surf Semantic Tokens (Light) */
-  --bg-subtle: rgba(42, 42, 42, 0.04);
-  --bg-subtle-hover: rgba(42, 42, 42, 0.06);
-  --bg-base: rgba(255, 255, 255, 0.88);
-  --bg-base-opaque: #ffffff;
-  --bg-menu: #ffffff;
-  --bg-chat: #fcfcfc;
-  --bg-chat-nav: #f4f4f4;
-  --fg-base: #212121;
-  --fg-subtle: #7a7a7a;
-  --fg-muted: #aaaaaa;
-  --fg-disabled: #d8d8d8;
-  --border-base: rgba(42, 42, 42, 0.04);
-  --border-strong: rgba(42, 42, 42, 0.08);
-  --border-contrast: rgba(42, 42, 42, 0.12);
-  --border-focus: rgba(42, 42, 42, 0.4);
+  /* Semantic Tokens (Dark) */
+  --bg-subtle: rgba(255, 255, 255, 0.03);
+  --bg-subtle-hover: rgba(255, 255, 255, 0.06);
+  --bg-base: rgba(15, 15, 20, 0.95);
+  --bg-base-opaque: hsl(240 10% 6%);
+  --bg-glass: rgba(255, 255, 255, 0.03);
+  --bg-glass-hover: rgba(255, 255, 255, 0.06);
+  --bg-menu: hsl(240 10% 8%);
+  --bg-chat: hsl(240 10% 4%);
+  --bg-chat-nav: hsl(240 10% 6%);
+  --fg-base: hsl(0 0% 95%);
+  --fg-subtle: hsl(240 5% 65%);
+  --fg-muted: hsl(240 5% 45%);
+  --fg-disabled: hsl(240 5% 30%);
+  --border-base: rgba(255, 255, 255, 0.05);
+  --border-strong: rgba(255, 255, 255, 0.1);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(168, 85, 247, 0.4);
+  --border-focus: rgba(168, 85, 247, 0.6);
 
-  /* Tag Colors */
-  --tag-blue-10: rgba(91, 181, 255, 0.1);
-  --tag-blue-100: #5bb5ff;
-  --tag-yellow-10: rgba(222, 195, 120, 0.1);
-  --tag-yellow-100: #dec378;
-  --tag-purple-10: rgba(144, 142, 184, 0.1);
-  --tag-purple-100: #908eb8;
-  --tag-cyan-10: rgba(116, 173, 164, 0.1);
-  --tag-cyan-100: #74ada4;
-  --tag-pink-10: rgba(184, 142, 167, 0.1);
-  --tag-pink-100: #b88ea7;
-  --tag-orange-10: rgba(184, 160, 142, 0.1);
-  --tag-orange-100: #b8a08e;
+  /* Tag Colors (Web3 style) */
+  --tag-blue-10: rgba(59, 130, 246, 0.12);
+  --tag-blue-100: #60a5fa;
+  --tag-yellow-10: rgba(234, 179, 8, 0.12);
+  --tag-yellow-100: #fbbf24;
+  --tag-purple-10: rgba(168, 85, 247, 0.12);
+  --tag-purple-100: #a855f7;
+  --tag-cyan-10: rgba(34, 211, 238, 0.12);
+  --tag-cyan-100: #22d3ee;
+  --tag-pink-10: rgba(236, 72, 153, 0.12);
+  --tag-pink-100: #ec4899;
+  --tag-orange-10: rgba(249, 115, 22, 0.12);
+  --tag-orange-100: #fb923c;
 
-  /* Surf Gradient Definitions (raw, mode-independent) */
+  /* Surf Gradient Definitions */
   --gradient-max-dark: linear-gradient(213deg, #8c421d 2%, #fbe67b 31%, #fcfbe7 53%, #f7d14e 77%, #d4a041 100%);
   --gradient-max-light: linear-gradient(125deg, #8c421d 22%, #d2af00 47%, #cd9124 67%, #d4a041 88%);
   --gradient-pro-dark: linear-gradient(213deg, #7a96ac 1%, #c5d6e2 27%, #eaeff3 47%, #c5d6e2 65%, #a3bccf 89%);
@@ -205,11 +219,11 @@
   --gradient-g4: linear-gradient(232deg, #fedc2a 4%, #dd5789 56%, #7a2c9e 104%);
   --gradient-g5: linear-gradient(32deg, #fc3bb2 6%, #f7906e 79%);
 
-  /* Surf Gradients (semantic, auto-switch by mode) */
-  --gradient-max: var(--gradient-max-light);
-  --gradient-pro: var(--gradient-pro-light);
-  --gradient-plus: var(--gradient-plus-light);
-  --gradient-upgrade: var(--gradient-upgrade-light);
+  /* Surf Gradients (Dark) */
+  --gradient-max: var(--gradient-max-dark);
+  --gradient-pro: var(--gradient-pro-dark);
+  --gradient-plus: var(--gradient-plus-dark);
+  --gradient-upgrade: var(--gradient-upgrade-dark);
 
   /* Spacing */
   --spacing-2: 2px;
@@ -241,54 +255,7 @@
   /* Typography */
   --font-family-header: "Lato", "PingFang SC", sans-serif;
   --font-family-body: "Lato", "PingFang SC", sans-serif;
-  --font-family-code: "Roboto Mono", monospace;
-}
-
-/* ===== Dark Mode ===== */
-.dark {
-  /* shadcn semantic tokens (Surf Dark) */
-  --background: hsl(0 0% 9%);
-  --foreground: hsl(0 0% 91%);
-  --card: hsl(0 0% 9%);
-  --card-foreground: hsl(0 0% 91%);
-  --popover: hsl(0 0% 15%);
-  --popover-foreground: hsl(0 0% 91%);
-  --primary: hsl(339 100% 58%);
-  --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(0 0% 16%);
-  --secondary-foreground: hsl(0 0% 91%);
-  --muted: hsl(0 0% 16%);
-  --muted-foreground: hsl(0 0% 67%);
-  --accent: hsl(0 0% 16%);
-  --accent-foreground: hsl(0 0% 91%);
-  --destructive: hsl(359 100% 65%);
-  --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(0 0% 20%);
-  --input: hsl(0 0% 20%);
-  --ring: #e7e7e7;
-
-  /* Surf Gradients (Dark) */
-  --gradient-max: var(--gradient-max-dark);
-  --gradient-pro: var(--gradient-pro-dark);
-  --gradient-plus: var(--gradient-plus-dark);
-  --gradient-upgrade: var(--gradient-upgrade-dark);
-
-  /* Surf Semantic Tokens (Dark) */
-  --bg-subtle: rgba(255, 255, 255, 0.04);
-  --bg-subtle-hover: rgba(255, 255, 255, 0.12);
-  --bg-base: rgba(42, 42, 42, 0.8);
-  --bg-base-opaque: #171717;
-  --bg-menu: #252525;
-  --bg-chat: #101010;
-  --bg-chat-nav: #171717;
-  --fg-base: #e7e7e7;
-  --fg-subtle: #aaaaaa;
-  --fg-muted: #7a7a7a;
-  --fg-disabled: #5b5b5b;
-  --border-base: rgba(255, 255, 255, 0.04);
-  --border-strong: rgba(255, 255, 255, 0.08);
-  --border-contrast: rgba(255, 255, 255, 0.12);
-  --border-focus: rgba(255, 255, 255, 0.4);
+  --font-family-code: "JetBrains Mono", "Geist Mono", "Roboto Mono", ui-monospace, monospace;
 }
 
 @layer base {
@@ -300,9 +267,141 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: "Lato", "PingFang SC", sans-serif;
+    font-family: var(--font-family-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-subtle);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--brand-30);
+  }
+}
+
+/* ===== Glass Morphism Utilities ===== */
+@layer utilities {
+  .glass {
+    background: var(--bg-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-glass);
+  }
+
+  .glass-hover:hover {
+    background: var(--bg-glass-hover);
+    border-color: var(--border-strong);
+  }
+
+  /* Web3 Gradient Text */
+  .gradient-text {
+    background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Metal Badge Gradient */
+  .badge-gradient {
+    background: var(--gradient-metal);
+    border: 1px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+  }
+
+  .badge-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--gradient-badge);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  /* Card Glow Effect */
+  .card-glow {
+    box-shadow: 0 0 40px rgba(168, 85, 247, 0.08),
+                0 0 80px rgba(236, 72, 153, 0.04);
+  }
+
+  /* Price Tag Glow */
+  .price-glow {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  /* Progress Bar Glow */
+  .progress-glow {
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.5),
+                0 0 24px rgba(236, 72, 153, 0.3);
+  }
+
+  /* NFT Image Glow */
+  .nft-glow {
+    filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.2));
+    transition: filter 0.3s ease;
+  }
+
+  .nft-glow:hover {
+    filter: drop-shadow(0 0 20px rgba(236, 72, 153, 0.35));
+  }
+
+  /* Skeleton shimmer animation */
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--bg-subtle) 0%,
+      rgba(255, 255, 255, 0.08) 50%,
+      var(--bg-subtle) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Serial number monospace style */
+  .mono-data {
+    font-family: var(--font-family-mono);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  /* Consecutive +1 indicator */
+  .consecutive-badge {
+    background: var(--gradient-badge);
+    background-clip: padding-box;
+    position: relative;
+  }
+
+  .consecutive-badge::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 50%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
   }
 }
 

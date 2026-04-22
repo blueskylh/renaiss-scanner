@@ -42,7 +42,13 @@ function detectLocale(): Locale {
 }
 
 export function useI18n() {
-  const [locale, setLocaleState] = useState<Locale>(detectLocale)
+  const [locale, setLocaleState] = useState<Locale>("en")
+  const [isReady, setIsReady] = useState(false)
+
+  useEffect(() => {
+    setLocaleState(detectLocale())
+    setIsReady(true)
+  }, [])
 
   const setLocale = useCallback((l: Locale) => {
     localStorage.setItem(STORAGE_KEY, l)
@@ -66,5 +72,5 @@ export function useI18n() {
     [locale],
   )
 
-  return { t, locale, setLocale, locales: Object.keys(messages) as Locale[] }
+  return { t, locale, setLocale, locales: Object.keys(messages) as Locale[], isReady }
 }

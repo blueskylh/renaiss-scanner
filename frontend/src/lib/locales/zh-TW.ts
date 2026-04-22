@@ -32,6 +32,7 @@ export default {
   "pair.priceAsc": "價格升序",
   "pair.totalCostTooltip": "兩張卡牌的掛單價總和",
   "pair.noPairsFound": "當前沒有找到雙卡均在售的連號對",
+  "pair.consecutive": "連號 +1",
 
   "card.listed": "在售",
   "card.bargain": "撿漏",
