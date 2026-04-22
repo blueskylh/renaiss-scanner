@@ -6,6 +6,7 @@ export default {
   "app.timezone": "시간대: UTC",
   "app.registerRenaiss": "Renaiss 가입",
   "app.followX": "X 팔로우",
+  "app.tutorial": "사용법",
 
   "stats.listedPairs": "판매 연번 페어",
   "stats.marketTotal": "마켓 판매 총량",

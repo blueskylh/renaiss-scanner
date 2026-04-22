@@ -7,6 +7,7 @@ export default {
   "app.timezone": "时区：UTC",
   "app.registerRenaiss": "注册 Renaiss",
   "app.followX": "关注 X",
+  "app.tutorial": "使用教程",
 
   // Stats
   "stats.listedPairs": "在售连号对",

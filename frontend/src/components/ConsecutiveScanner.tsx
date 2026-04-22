@@ -20,7 +20,7 @@ import {
   Clock, Database,
   ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight,
   Languages, ShoppingCart, Eye, Flame,
-  X,
+  X, BookOpen,
 } from "lucide-react"
 
 interface CardData {
@@ -346,7 +346,7 @@ export default function ConsecutiveScanner() {
               </div>
             </div>
 
-            <div className="grid min-w-[260px] grid-cols-2 gap-3 sm:grid-cols-2 lg:w-[360px] lg:grid-cols-2">
+            <div className="grid min-w-[260px] grid-cols-3 gap-3 lg:w-[540px] lg:grid-cols-3">
               <div className="rounded-2xl border border-border-strong bg-bg-base-opaque/70 p-4">
                 <div className="mb-1 flex items-center gap-2 text-xs uppercase tracking-wide text-fg-muted">
                   <Clock className="h-3.5 w-3.5" />
@@ -384,6 +384,15 @@ export default function ConsecutiveScanner() {
               >
                 <img src="/logo.svg" alt="Renaiss" className="h-4 w-4" />
                 {t("app.registerRenaiss")}
+              </a>
+              <a
+                href="https://x.com/blueskylh1/status/2044281808297308586"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-600/10 px-3 py-2 text-sm font-medium text-cyan-200 transition-all duration-200 hover:border-cyan-400/60 hover:bg-cyan-600/20 hover:shadow-[0_0_16px_rgba(34,211,238,0.35)]"
+              >
+                <BookOpen className="h-4 w-4" />
+                {t("app.tutorial")}
               </a>
               <a
                 href="https://twitter.com/intent/user?screen_name=blueskylh1"

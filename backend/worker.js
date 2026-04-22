@@ -627,7 +627,8 @@ export default {
     } else if (url.pathname === '/api/health') {
       response = json({ ok: true })
     } else {
-      response = json({ error: 'Not found' }, { status: 404 })
+      // Let Assets handle non-API routes
+      response = new Response('Not Found', { status: 404 })
     }
 
     return withCors(response, env)

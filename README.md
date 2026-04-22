@@ -8,7 +8,10 @@
 ---
 **关注我的 X → [Follow @blueskylh1](https://twitter.com/intent/user?screen_name=blueskylh1)**
 ---
+**使用教程 → [查看教程](https://x.com/blueskylh1/status/2044281808297308586)**
+---
 **已部署的网站 → [直达链接](https://renaiss-tool-689931.napa.de5.net/)**
+
 ---
 
 ![Demo](screenshot.png)
@@ -28,6 +31,7 @@
 | 层 | 技术 |
 |---|---|
 | 后端 API | Cloudflare Workers |
+| 前端静态 | Workers Assets（内置） |
 | 数据库 | Cloudflare D1 (SQLite) |
 | 定时同步 | Workers Cron Triggers (`*/10 * * * *`) |
 | 前端 | React 19 + Vite + Tailwind CSS 4 |
@@ -36,10 +40,12 @@
 ## 项目结构
 
 ```
+renaiss-scanner/
 ├── backend/
-│   ├── worker.js          # Workers 入口：API 路由 + 同步逻辑
-│   ├── schema.sql          # D1 建表语句
-│   └── package.json
+│   ├── worker.js          # Workers 入口：API + 前端静态资源
+│   ├── db/schema.js       # D1 建表语句（内嵌在 worker.js）
+│   ├── package.json
+│   └── scripts/            # 开发辅助脚本
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
@@ -48,12 +54,19 @@
 │   │   ├── lib/
 │   │   │   ├── api.ts                  # API 地址构造
 │   │   │   ├── i18n.ts                 # 多语言系统
-│   │   │   └── locales/               # 翻译文件 (zh-CN, zh-TW, en, ja, ko)
+│   │   │   └── locales/               # 翻译文件
+│   │   │       ├── zh-CN.ts
+│   │   │       ├── zh-TW.ts
+│   │   │       ├── en.ts
+│   │   │       ├── ja.ts
+│   │   │       └── ko.ts
 │   │   └── App.tsx
-│   ├── public/             # 静态资源 (logo, 头像)
+│   ├── public/             # 静态资源 (logo, avatar)
+│   ├── .env                # API 地址配置
 │   └── package.json
-├── wrangler.toml           # Workers 配置
-└── logo.svg
+├── wrangler.toml           # Workers 配置（不提交）
+├── wrangler.toml.example   # 配置模板（可提交）
+└── README.md
 ```
 
 ## API
@@ -67,7 +80,7 @@
 
 ## 本地开发
 
-### 后端
+### 后端（Workers 本地模拟）
 
 ```bash
 cd backend
@@ -81,9 +94,9 @@ npm run dev    # wrangler dev，本地 D1
 cd frontend
 npm install
 
-# 配置 API 地址（指向本地 Workers）
+# 配置 API 地址
 cp .env.example .env
-# VITE_API_BASE=http://localhost:8787
+# 编辑 .env 设置 VITE_API_BASE
 
 npm run dev
 ```
@@ -102,119 +115,59 @@ npm run dev
    wrangler login
    ```
 
-### 1. 部署后端 (Workers + D1)
+### 部署步骤
 
-#### 1.1 创建 D1 数据库
+#### 1. 创建 D1 数据库（如需要）
 
 ```bash
 npx wrangler d1 create renaiss-scanner
 ```
 
-复制返回的 `database_id`，更新 `wrangler.toml`：
+复制返回的 `database_id` 备用。
 
-```toml
-[[d1_databases]]
-binding = "DB"
-database_name = "renaiss-scanner"
-database_id = "你的-database-id"
-```
+#### 2. 配置 wrangler.toml
 
-#### 1.2 初始化数据库表
+从 `wrangler.toml.example` 复制：
 
 ```bash
-npx wrangler d1 execute renaiss-scanner --file backend/schema.sql
+cp wrangler.toml.example wrangler.toml
 ```
 
-#### 1.3 配置环境变量
+编辑 `wrangler.toml`，填入：
+- `database_id`（步骤1获取的）
+- `REFRESH_TOKEN`（自定义密钥）
+- `FRONTEND_ORIGIN`（前端域名，可先留空）
 
-编辑 `wrangler.toml`，修改以下占位符：
+> ⚠️ `wrangler.toml` 包含敏感信息，已加入 `.gitignore`，请勿提交。
 
-```toml
-[vars]
-REFRESH_TOKEN = "自定义一个密钥"
-FRONTEND_ORIGIN = "你的前端域名（先部署前端后填写）"
-```
-
-#### 1.4 部署 Workers
-
-```bash
-npx wrangler deploy
-```
-
-部署完成后，Workers URL 为：
-```
-https://<项目名>.<你的子域>.workers.dev
-```
-
-#### 1.5 验证
-
-```bash
-curl https://<项目名>.<你的子域>.workers.dev/api/health
-```
-
-预期返回：`{"ok": true}`
-
-### 2. 部署前端 (Pages)
-
-#### 2.1 构建前端
+#### 3. 构建前端
 
 ```bash
 cd frontend
-
-# 创建 .env，指向你的 Workers URL
-cat > .env << EOF
-VITE_API_BASE=https://<项目名>.<你的子域>.workers.dev
-EOF
-
 npm install
 npm run build
 ```
 
-#### 2.2 上传到 Cloudflare Pages
+#### 4. 部署 Workers（前后端一起）
 
 ```bash
-cd frontend
-npx wrangler pages deploy dist --project-name=renaiss-scanner-frontend
+cd ..
+npx wrangler deploy --name renaiss-scanner
 ```
 
-部署完成后，Pages URL 为：
+部署会包含：
+- 后端 API（worker.js）
+- 前端静态资源（frontend/dist/）
+
+部署完成后访问：
 ```
-https://<项目名>.pages.dev
-```
-
-#### 2.3 更新后端 CORS 配置
-
-将 Pages 域名填入 `wrangler.toml`：
-
-```toml
-[vars]
-FRONTEND_ORIGIN = "https://<项目名>.pages.dev
+https://renaiss-scanner.renaiss-tool-689931.workers.dev
 ```
 
-重新部署后端：
+#### 5. 配置自定义域名（可选）
 
-```bash
-npx wrangler deploy
-```
-
-### 3. (可选) 自定义域名
-
-在 Cloudflare Dashboard 中：
-- **Workers**：Settings → Triggers → Add Custom Domain
-- **Pages**：Settings → Custom Domains → Set up a custom domain
-
-### 4. (可选) 配置 CI/CD
-
-将项目推送到 GitHub 后，在 Cloudflare Dashboard 中：
-- Pages：Integrations → Connect to Git，选择仓库和构建命令
-- Workers：可配合 GitHub Actions 自动部署
-
-构建命令：
-```bash
-cd frontend && npm install && npm run build
-```
-
-输出目录：`frontend/dist`
+在 Cloudflare Dashboard：
+- Workers → Settings → Triggers → Add Custom Domain
 
 ## 数据库表结构
 
@@ -230,13 +183,20 @@ cd frontend && npm install && npm run build
 | ask_price | REAL | 挂单价 (USD) |
 | fmv | REAL | Fair Market Value (USD) |
 | image_url | TEXT | 卡牌图片 URL |
-| ... | | 其他字段见 schema.sql |
+| ... | | 其他字段见代码 |
 
 **scan_status** — 同步状态（单行表）
+**api_cache** — 预计算配对缓存
+
+## 性能优化
+
+- 配对计算每 10 分钟只执行一次，结果写入 `api_cache` 表
+- API 读取预计算结果，避免全表扫描
+- 使用 `env.DB.batch()` 合并多次查询
 
 ## 致谢
 
-感谢 **surf** 和 **Cloudflare** 提供的资源支持。
+感谢 **Cloudflare** 提供的资源支持。
 
 ## License
 

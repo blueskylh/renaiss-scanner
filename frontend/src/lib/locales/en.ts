@@ -6,6 +6,7 @@ export default {
   "app.timezone": "Timezone: UTC",
   "app.registerRenaiss": "Register Renaiss",
   "app.followX": "Follow on X",
+  "app.tutorial": "How to Use",
 
   "stats.listedPairs": "Listed Pairs",
   "stats.marketTotal": "Market Total",
