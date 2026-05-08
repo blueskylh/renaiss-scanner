@@ -10,7 +10,7 @@
 ---
 **使用教程 → [查看教程](https://x.com/blueskylh1/status/2044281808297308586)**
 ---
-**已部署的网站 → [直达链接](https://renaiss-tool-689931.napa.de5.net/)**
+**已部署的网站 → [直达链接](https://bluesky-renaiss-market-maker2.napa.de5.net/)**
 
 ---
 
